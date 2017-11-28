@@ -178,6 +178,7 @@ class P3D(nn.Module):
 		self.avgpool = nn.AvgPool2d(kernel_size=(5, 5), stride=1)                              # pooling layer for res5.
 		self.dropout=nn.Dropout(p=dropout)
 		self.fc = nn.Linear(512 * block.expansion, num_classes)
+		# self.softmax = nn.LogSoftmax()
 
 		for m in self.modules():
 			if isinstance(m, nn.Conv3d):
@@ -266,6 +267,8 @@ class P3D(nn.Module):
 
 		x = x.view(-1,self.fc.in_features)
 		x = self.fc(self.dropout(x))
+		# x = self.dropout(x)
+		# x = self.softmax(x)
 
 		return x
 
@@ -375,7 +378,7 @@ def get_optim_policies(model=None,modality='RGB',enable_pbn=True):
 if __name__ == '__main__':
 
 	model = P3D199(pretrained=True,num_classes=400)
-	model = model.cuda()
-	data=torch.autograd.Variable(torch.rand(10,3,16,160,160)).cuda()   # if modality=='Flow', please change the 2nd dimension 3==>2
+	model = model
+	data=torch.autograd.Variable(torch.rand(10,3,16,160,160))   # if modality=='Flow', please change the 2nd dimension 3==>2
 	out=model(data)
 	print (out.size(),out)
